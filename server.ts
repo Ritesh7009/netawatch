@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -272,8 +273,21 @@ async function startServer() {
     }
   });
 
+  // Rate limiter specifically for Gemini AI MP dossier generator (10 requests per 15 mins per IP)
+  const dossierRateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 10 requests per windowMs
+    standardHeaders: true, // Return standard RateLimit-* headers
+    legacyHeaders: false, // Disable X-RateLimit-* legacy headers
+    statusCode: 429,
+    message: { error: 'Too many dossier generation requests. Please try again later.' },
+    handler: (req, res, _next, options) => {
+      res.status(options.statusCode).json(options.message);
+    }
+  });
+
   // API 2: Live AI Dossier Generator for Any MP in India
-  app.post('/api/generate-mp-dossier', async (req, res) => {
+  app.post('/api/generate-mp-dossier', dossierRateLimiter, async (req, res) => {
     try {
       const { name, constituency, state, party, house } = req.body;
 
