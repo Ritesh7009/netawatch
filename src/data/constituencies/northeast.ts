@@ -1,0 +1,44 @@
+import { LokSabhaConstituency } from '../all543Constituencies';
+
+export const NORTHEAST_CONSTITUENCIES: LokSabhaConstituency[] = [
+  // ==================== ASSAM (14 Seats) ====================
+  { id: 'as-kokrajhar', constituency: 'Kokrajhar', state: 'Assam', stateCode: 'AS', mpName: 'Joyanta Basumatary', party: 'United People\'s Party Liberal', partyAbbr: 'UPPL', partyColor: '#eab308', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 2.8, attendancePercent: 91, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-dhubri', constituency: 'Dhubri', state: 'Assam', stateCode: 'AS', mpName: 'Rakibul Hussain', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 14.2, attendancePercent: 95, criminalCases: 0, education: 'Post Graduate' },
+  { id: 'as-barpeta', constituency: 'Barpeta', state: 'Assam', stateCode: 'AS', mpName: 'Phani Bhusan Choudhury', party: 'Asom Gana Parishad', partyAbbr: 'AGP', partyColor: '#16a34a', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 5.6, attendancePercent: 92, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-darrang-udalguri', constituency: 'Darrang-Udalguri', state: 'Assam', stateCode: 'AS', mpName: 'Dilip Saikia', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 4.2, attendancePercent: 94, criminalCases: 0, education: 'Post Graduate' },
+  { id: 'as-guwahati', constituency: 'Guwahati', state: 'Assam', stateCode: 'AS', mpName: 'Bijuli Kalita Medhi', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 3.8, attendancePercent: 93, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-diphu', constituency: 'Diphu', state: 'Assam', stateCode: 'AS', mpName: 'Amarsing Tisso', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 2.4, attendancePercent: 90, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-karimganj', constituency: 'Karimganj', state: 'Assam', stateCode: 'AS', mpName: 'Kripanath Mallah', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 3.6, attendancePercent: 91, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-silchar', constituency: 'Silchar', state: 'Assam', stateCode: 'AS', mpName: 'Parimal Suklabaidya', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 4.8, attendancePercent: 92, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-nagaon', constituency: 'Nagaon', state: 'Assam', stateCode: 'AS', mpName: 'Pradyut Bordoloi', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 6.8, attendancePercent: 94, criminalCases: 0, education: 'M.Phil (JNU)' },
+  { id: 'as-kaziranga', constituency: 'Kaziranga', state: 'Assam', stateCode: 'AS', mpName: 'Kamakhya Prasad Tasa', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 4.1, attendancePercent: 93, criminalCases: 0, education: 'Post Graduate' },
+  { id: 'as-sonitpur', constituency: 'Sonitpur', state: 'Assam', stateCode: 'AS', mpName: 'Ranjit Dutta', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 7.2, attendancePercent: 91, criminalCases: 0, education: 'Graduate' },
+  { id: 'as-jorhat', constituency: 'Jorhat', state: 'Assam', stateCode: 'AS', mpName: 'Gaurav Gogoi', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 8.9, attendancePercent: 96, criminalCases: 0, education: 'Master of Public Administration (NYU)', preloadedId: 'gaurav-gogoi' },
+  { id: 'as-dibrugarh', constituency: 'Dibrugarh', state: 'Assam', stateCode: 'AS', mpName: 'Sarbananda Sonowal', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 4.8, attendancePercent: 95, criminalCases: 0, education: 'LLB & B.A. (Former Chief Minister)' },
+  { id: 'as-lakhimpur', constituency: 'Lakhimpur', state: 'Assam', stateCode: 'AS', mpName: 'Pradan Baruah', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 3.4, attendancePercent: 92, criminalCases: 0, education: 'Graduate' },
+
+  // ==================== ARUNACHAL PRADESH (2 Seats) ====================
+  { id: 'ar-arunachal-west', constituency: 'Arunachal West', state: 'Arunachal Pradesh', stateCode: 'AR', mpName: 'Kiren Rijiju', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 9.8, attendancePercent: 96, criminalCases: 0, education: 'Law (Delhi University)', preloadedId: 'kiren-rijiju' },
+  { id: 'ar-arunachal-east', constituency: 'Arunachal East', state: 'Arunachal Pradesh', stateCode: 'AR', mpName: 'Tapir Gao', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 18.0, attendancePercent: 93, criminalCases: 0, education: 'Graduate' },
+
+  // ==================== MANIPUR (2 Seats) ====================
+  { id: 'mn-inner-manipur', constituency: 'Inner Manipur', state: 'Manipur', stateCode: 'MN', mpName: 'Dr. Angomcha Bimol Akoijam', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 1.8, attendancePercent: 96, criminalCases: 0, education: 'Ph.D. (Associate Professor, JNU)' },
+  { id: 'mn-outer-manipur', constituency: 'Outer Manipur', state: 'Manipur', stateCode: 'MN', mpName: 'Alfred Kanngam S. Arthur', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 2.9, attendancePercent: 94, criminalCases: 0, education: 'Graduate' },
+
+  // ==================== MEGHALAYA (2 Seats) ====================
+  { id: 'ml-shillong', constituency: 'Shillong', state: 'Meghalaya', stateCode: 'ML', mpName: 'Dr. Ricky Andrew Syngkon', party: 'Voice of the People Party', partyAbbr: 'VPP', partyColor: '#dc2626', alliance: 'Others', house: 'Lok Sabha', estimatedNetWorthCr: 2.1, attendancePercent: 95, criminalCases: 0, education: 'Ph.D. in Commerce (NEHU Professor)' },
+  { id: 'ml-tura', constituency: 'Tura', state: 'Meghalaya', stateCode: 'ML', mpName: 'Saleng A. Sangma', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 4.8, attendancePercent: 92, criminalCases: 0, education: 'Graduate' },
+
+  // ==================== MIZORAM (1 Seat) ====================
+  { id: 'mz-mizoram', constituency: 'Mizoram', state: 'Mizoram', stateCode: 'MZ', mpName: 'Richard Vanlalhmangaiha', party: 'Zoram People\'s Movement', partyAbbr: 'ZPM', partyColor: '#eab308', alliance: 'Others', house: 'Lok Sabha', estimatedNetWorthCr: 3.2, attendancePercent: 94, criminalCases: 0, education: 'B.Com' },
+
+  // ==================== NAGALAND (1 Seat) ====================
+  { id: 'nl-nagaland', constituency: 'Nagaland', state: 'Nagaland', stateCode: 'NL', mpName: 'S. Supongmeren Jamir', party: 'Indian National Congress', partyAbbr: 'INC', partyColor: '#0284c7', alliance: 'INDIA', house: 'Lok Sabha', estimatedNetWorthCr: 2.8, attendancePercent: 93, criminalCases: 0, education: 'Law & Graduate' },
+
+  // ==================== SIKKIM (1 Seat) ====================
+  { id: 'sk-sikkim', constituency: 'Sikkim', state: 'Sikkim', stateCode: 'SK', mpName: 'Indra Hang Subba', party: 'Sikkim Krantikari Morcha', partyAbbr: 'SKM', partyColor: '#dc2626', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 1.4, attendancePercent: 95, criminalCases: 0, education: 'Ph.D. in Physics' },
+
+  // ==================== TRIPURA (2 Seats) ====================
+  { id: 'tr-tripura-west', constituency: 'Tripura West', state: 'Tripura', stateCode: 'TR', mpName: 'Biplab Kumar Deb', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 4.2, attendancePercent: 93, criminalCases: 0, education: 'Graduate (Former Chief Minister)' },
+  { id: 'tr-tripura-east', constituency: 'Tripura East', state: 'Tripura', stateCode: 'TR', mpName: 'Kriti Devi Debbarman', party: 'Bharatiya Janata Party', partyAbbr: 'BJP', partyColor: '#f97316', alliance: 'NDA', house: 'Lok Sabha', estimatedNetWorthCr: 14.8, attendancePercent: 91, criminalCases: 0, education: 'Graduate' }
+];

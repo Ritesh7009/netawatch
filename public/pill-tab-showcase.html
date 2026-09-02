@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrollable Pill-Tab Navigation Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#fbf9f5] text-[#18181b] min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 font-sans antialiased">
+  
+  <div class="max-w-4xl w-full mx-auto space-y-8">
+    
+    <!-- Title & Description -->
+    <div class="text-center space-y-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f1ede4] border border-[#18181b]/15 text-xs font-mono font-bold uppercase tracking-wider text-[#18181b]">
+        <span>Precision UI Component</span>
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-[#18181b]">
+        Horizontal Scrollable Pill-Tab Navigation
+      </h1>
+      <p class="text-sm text-[#52525b] max-w-xl mx-auto">
+        Featuring dynamic edge-fade masking, GSAP shared indicator morphing, active-tab centering, and keyboard navigation.
+      </p>
+    </div>
+
+    <!-- Navigation Bar Container -->
+    <div class="w-full max-w-3xl mx-auto">
+      <div class="relative flex items-center gap-2 bg-white/70 p-2 rounded-2xl border border-[#18181b]/10 shadow-sm backdrop-blur-md">
+        
+        <!-- Left Arrow Button -->
+        <button
+          id="prev-btn"
+          aria-label="Previous tab"
+          class="shrink-0 h-8 w-8 rounded-full border border-[#18181b]/15 bg-white text-[#18181b] flex items-center justify-center transition-all shadow-2xs cursor-pointer opacity-30 pointer-events-none hover:bg-[#18181b] hover:text-white"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Pill Tab Track with CSS Mask Fade -->
+        <div class="relative flex-1 min-w-0 bg-[#f1ede4] p-1.5 rounded-full border border-[#18181b]/15 shadow-inner overflow-hidden">
+          
+          <div
+            id="tab-row"
+            role="tablist"
+            aria-label="Showcase demo sections"
+            class="relative flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth select-none cursor-grab"
+          >
+            <!-- 1. Shared Sliding Active Indicator Pill -->
+            <div
+              id="active-indicator"
+              aria-hidden="true"
+              class="absolute top-0 left-0 rounded-full bg-[#18181b] shadow-xs pointer-events-none will-change-transform"
+              style="opacity: 0;"
+            ></div>
+
+            <!-- 2. Shared Hover Indicator Pill -->
+            <div
+              id="hover-indicator"
+              aria-hidden="true"
+              class="absolute top-0 left-0 rounded-full border border-[#18181b]/25 bg-black/5 pointer-events-none will-change-transform"
+              style="opacity: 0;"
+            ></div>
+
+            <!-- Tabs -->
+            <button role="tab" aria-selected="true" tabindex="0" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-white whitespace-nowrap outline-none transition-colors duration-200" data-index="0">
+              Number Odometer
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="1">
+              Product Hotspot Modal
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="2">
+              Radial Cards Slider (GSAP)
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="3">
+              Step-by-step Timeline
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="4">
+              The Grid (Animated Columns)
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="5">
+              Shutter Scroll Transition
+            </button>
+            <button role="tab" aria-selected="false" tabindex="-1" class="tab-btn relative z-10 px-3.5 py-1.5 text-xs font-bold rounded-full text-[#52525b] hover:text-[#18181b] whitespace-nowrap outline-none transition-colors duration-200" data-index="6">
+              Collage Focus Card on Hover
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Arrow Button -->
+        <button
+          id="next-btn"
+          aria-label="Next tab"
+          class="shrink-0 h-8 w-8 rounded-full border border-[#18181b]/15 bg-white text-[#18181b] flex items-center justify-center transition-all shadow-2xs cursor-pointer hover:bg-[#18181b] hover:text-white"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Active Panel Preview -->
+    <div id="panel-preview" class="p-6 bg-white rounded-2xl border border-[#18181b]/10 shadow-sm max-w-xl mx-auto text-center space-y-2">
+      <span class="text-xs font-mono uppercase tracking-widest text-[#52525b]">Active View</span>
+      <h3 id="active-title" class="text-xl font-bold text-[#18181b]">Number Odometer</h3>
+      <p id="active-desc" class="text-sm text-[#52525b]">Explore the interactive assets and live animated number counter.</p>
+    </div>
+
+  </div>
+
+  <script>
+    const tabRow = document.getElementById('tab-row');
+    const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const activeIndicator = document.getElementById('active-indicator');
+    const hoverIndicator = document.getElementById('hover-indicator');
+    const activeTitle = document.getElementById('active-title');
+    const activeDesc = document.getElementById('active-desc');
+
+    const descriptions = [
+      "Explore the interactive assets and live animated number counter.",
+      "Inspect MP dossiers with interactive hotspot markers and popovers.",
+      "High-performance radial card carousel with 3D perspective.",
+      "Audit criminal IPC records and sworn declarations step-by-step.",
+      "GIS animated column grid across 543 Lok Sabha constituencies.",
+      "Interactive manifesto pledge status tracker with shutter animations.",
+      "Dynamic lineage, generational velocity, and asset matrix."
+    ];
+
+    let activeIndex = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    let hasMoved = false;
+
+    // 1. UPDATE SCROLL AND DYNAMIC MASK IMAGE
+    function updateScrollAndMask() {
+      const scrollLeft = tabRow.scrollLeft;
+      const maxScroll = tabRow.scrollWidth - tabRow.clientWidth;
+      const tolerance = 4;
+
+      const hasLeft = scrollLeft > tolerance;
+      const hasRight = scrollLeft < maxScroll - tolerance;
+
+      // Update button states
+      if (hasLeft) {
+        prevBtn.classList.remove('opacity-30', 'pointer-events-none');
+      } else {
+        prevBtn.classList.add('opacity-30', 'pointer-events-none');
+      }
+
+      if (hasRight) {
+        nextBtn.classList.remove('opacity-30', 'pointer-events-none');
+      } else {
+        nextBtn.classList.add('opacity-30', 'pointer-events-none');
+      }
+
+      // Apply CSS dynamic mask-image
+      const fade = '48px';
+      let mask = 'none';
+      if (hasLeft && hasRight) {
+        mask = `linear-gradient(to right, transparent 0, black ${fade}, black calc(100% - ${fade}), transparent 100%)`;
+      } else if (hasLeft && !hasRight) {
+        mask = `linear-gradient(to right, transparent 0, black ${fade}, black 100%)`;
+      } else if (!hasLeft && hasRight) {
+        mask = `linear-gradient(to right, black 0, black calc(100% - ${fade}), transparent 100%)`;
+      }
+      tabRow.style.maskImage = mask;
+      tabRow.style.webkitMaskImage = mask;
+    }
+
+    // 2. SLIDING ACTIVE INDICATOR (GSAP)
+    function positionIndicator(idx, immediate = false) {
+      const target = tabs[idx];
+      if (!target) return;
+
+      const left = target.offsetLeft;
+      const width = target.offsetWidth;
+      const top = target.offsetTop;
+      const height = target.offsetHeight;
+
+      if (immediate) {
+        gsap.set(activeIndicator, { x: left, y: top, width, height, opacity: 1 });
+      } else {
+        gsap.to(activeIndicator, {
+          x: left,
+          y: top,
+          width,
+          height,
+          opacity: 1,
+          duration: 0.28,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      }
+    }
+
+    // 3. AUTO SCROLL ACTIVE TAB INTO VIEW
+    function scrollIntoView(idx) {
+      const target = tabs[idx];
+      if (!target) return;
+
+      const targetScroll = target.offsetLeft - (tabRow.clientWidth / 2) + (target.offsetWidth / 2);
+      const clamped = Math.max(0, Math.min(tabRow.scrollWidth - tabRow.clientWidth, targetScroll));
+
+      gsap.to(tabRow, {
+        scrollLeft: clamped,
+        duration: 0.45,
+        ease: 'power2.out',
+        onUpdate: updateScrollAndMask
+      });
+    }
+
+    // 4. SET ACTIVE TAB
+    function setActive(idx) {
+      activeIndex = idx;
+      tabs.forEach((tab, i) => {
+        const isActive = i === idx;
+        tab.setAttribute('aria-selected', isActive);
+        tab.setAttribute('tabindex', isActive ? '0' : '-1');
+        if (isActive) {
+          tab.classList.remove('text-[#52525b]');
+          tab.classList.add('text-white');
+        } else {
+          tab.classList.remove('text-white');
+          tab.classList.add('text-[#52525b]');
+        }
+      });
+
+      positionIndicator(idx);
+      scrollIntoView(idx);
+      activeTitle.textContent = tabs[idx].textContent.trim();
+      activeDesc.textContent = descriptions[idx];
+    }
+
+    // Tab Click Listeners
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        if (hasMoved) return;
+        setActive(i);
+      });
+
+      tab.addEventListener('mouseenter', () => {
+        if (i === activeIndex) {
+          gsap.to(hoverIndicator, { opacity: 0, duration: 0.2 });
+          return;
+        }
+        gsap.to(hoverIndicator, {
+          x: tab.offsetLeft,
+          y: tab.offsetTop,
+          width: tab.offsetWidth,
+          height: tab.offsetHeight,
+          opacity: 1,
+          duration: 0.22,
+          ease: 'power2.out'
+        });
+      });
+
+      tab.addEventListener('mouseleave', () => {
+        gsap.to(hoverIndicator, { opacity: 0, duration: 0.2 });
+      });
+
+      tab.addEventListener('keydown', (e) => {
+        let nextIdx = -1;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          nextIdx = (i + 1) % tabs.length;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          nextIdx = (i - 1 + tabs.length) % tabs.length;
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          nextIdx = 0;
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          nextIdx = tabs.length - 1;
+        }
+        if (nextIdx >= 0) {
+          setActive(nextIdx);
+          tabs[nextIdx].focus();
+        }
+      });
+    });
+
+    // Arrow Buttons
+    prevBtn.addEventListener('click', () => {
+      if (activeIndex > 0) {
+        setActive(activeIndex - 1);
+        tabs[activeIndex].focus();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (activeIndex < tabs.length - 1) {
+        setActive(activeIndex + 1);
+        tabs[activeIndex].focus();
+      }
+    });
+
+    // Drag to Scroll
+    tabRow.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      hasMoved = false;
+      startX = e.clientX;
+      startScrollLeft = tabRow.scrollLeft;
+      tabRow.classList.add('cursor-grabbing');
+      tabRow.classList.remove('cursor-grab');
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) hasMoved = true;
+      tabRow.scrollLeft = startScrollLeft - dx;
+      updateScrollAndMask();
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      tabRow.classList.remove('cursor-grabbing');
+      tabRow.classList.add('cursor-grab');
+    });
+
+    tabRow.addEventListener('scroll', updateScrollAndMask, { passive: true });
+    window.addEventListener('resize', () => {
+      updateScrollAndMask();
+      positionIndicator(activeIndex, true);
+    });
+
+    // Initialize
+    setTimeout(() => {
+      updateScrollAndMask();
+      positionIndicator(0, true);
+    }, 50);
+  </script>
+</body>
+</html>

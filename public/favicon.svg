@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="terracottaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c44d31" />
+      <stop offset="100%" stop-color="#ab3f26" />
+    </linearGradient>
+  </defs>
+  <!-- Background Rounded Rect matching NetaWatch Terracotta badge -->
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="url(#terracottaGrad)" />
+  
+  <!-- Subtle Inner Inset Border -->
+  <rect x="4" y="4" width="56" height="56" rx="8" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" />
+  
+  <!-- "NW" Bold Serif Typography -->
+  <text x="32" y="44" font-family="'Cinzel', 'Playfair Display', 'Times New Roman', Georgia, serif" font-weight="900" font-size="32" fill="#ffffff" text-anchor="middle" letter-spacing="-1">NW</text>
+</svg>

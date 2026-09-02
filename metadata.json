@@ -1,0 +1,10 @@
+{
+  "name": "NetaWatch - Indian Political Intelligence & Leader Dossiers",
+  "description": "NetaWatch (Neta Watch / NetWatch / Net Watch) - Comprehensive political intelligence platform tracking Indian leaders' parliamentary records, assets, MPLADS funds, criminal affidavits, and key initiatives.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

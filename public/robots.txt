@@ -1,0 +1,24 @@
+# NetaWatch (Neta Watch / NetWatch / Net Watch) Robots Configuration
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+Sitemap: https://netawatch.in/sitemap.xml
+Host: https://netawatch.in

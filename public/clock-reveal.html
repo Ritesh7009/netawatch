@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Image Clock Reveal Intro Animation — GSAP</title>
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --card-bg: #141416;
+      --accent: #b4f82c;
+      --accent-red: #c44d31;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    .hero-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (max-width: 768px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 32px;
+      }
+    }
+
+    .hero-text h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-text p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(180, 248, 44, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(180, 248, 44, 0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button.replay-btn {
+      background: var(--accent-red);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      font-family: monospace;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    button.replay-btn:hover {
+      background: #b03d22;
+      transform: scale(1.03);
+    }
+
+    /* CLOCK REVEAL HERO VISUAL WRAPPER */
+    .clock-reveal-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* SVG Radial Clock Ticks (40-60 marks) */
+    .clock-ticks-svg {
+      position: absolute;
+      inset: -12%;
+      width: 124%;
+      height: 124%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .radial-tick {
+      stroke: rgba(255, 255, 255, 0.5);
+      stroke-width: 1.2;
+      stroke-linecap: round;
+    }
+
+    .radial-tick.hour-mark {
+      stroke: var(--accent);
+      stroke-width: 2.2;
+    }
+
+    /* Portrait Image Container: Fixed 3:4 Aspect Ratio */
+    .image-container {
+      position: relative;
+      width: 280px;
+      aspect-ratio: 3 / 4;
+      z-index: 2;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+      /* Initial clipped circle state */
+      border-radius: 50%;
+      clip-path: circle(50% at 50% 50%);
+      will-change: clip-path, border-radius, mask-image;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(1.10);
+      will-change: transform;
+      display: block;
+    }
+
+    /* Dark Leading Radar Sweep Wedge Overlay */
+    .sweep-hand {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+      transform-origin: left center;
+      pointer-events: none;
+      z-index: 3;
+      display: none;
+    }
+
+    .caption-pill {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 14px;
+      border-radius: 14px;
+      z-index: 4;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .caption-pill.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-container">
+    
+    <!-- Editorial Headline -->
+    <div class="hero-text">
+      <div class="badge">● Evidence-First Platform</div>
+      <h1>Hero Clock Reveal Intro Animation</h1>
+      <p>
+        Phase 1 sweeps radially around the clock perimeter uncovering the portrait image. 
+        Phase 2 smoothly morphs the circular aperture into a full rectangular frame while settling the image scale.
+      </p>
+      <div class="controls">
+        <button class="replay-btn" id="replayBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Replay Reveal
+        </button>
+      </div>
+    </div>
+
+    <!-- Clock Reveal Visual -->
+    <div class="clock-reveal-wrapper">
+      
+      <!-- SVG Radial Ticks Dial (60 Marks) -->
+      <svg class="clock-ticks-svg" viewBox="0 0 400 400" id="ticksSvg">
+        <circle cx="200" cy="200" r="168" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="2 4"/>
+      </svg>
+
+      <!-- 3:4 Aspect Ratio Hero Portrait Frame -->
+      <div class="image-container" id="imageWrapper">
+        <img 
+          class="hero-image" 
+          id="heroImage"
+          src="https://images.unsplash.com/photo-1598971861713-54ad16a7e72e?auto=format&fit=crop&w=1000&q=80" 
+          alt="Sansad Bhavan Hero Portrait"
+        />
+        <div class="caption-pill" id="captionPill">
+          <div style="font-size: 0.7rem; font-family: monospace; color: var(--accent); font-weight: bold; text-transform: uppercase;">Central Vista Apex</div>
+          <div style="font-size: 0.85rem; font-weight: bold; color: #fff;">Sansad Constitution Hall</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // 1. Generate 60 Radial Clock Tick Marks in SVG
+    const ticksSvg = document.getElementById('ticksSvg');
+    const totalTicks = 60;
+    const cx = 200, cy = 200;
+    const baseRadius = 158;
+
+    for (let i = 0; i < totalTicks; i++) {
+      const deg = (i * 360) / totalTicks - 90;
+      const rad = (deg * Math.PI) / 180;
+      const isHour = i % 5 === 0;
+      const len = isHour ? 14 : 7;
+      const r1 = baseRadius + 4;
+      const r2 = r1 + len;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx + r1 * Math.cos(rad));
+      line.setAttribute('y1', cy + r1 * Math.sin(rad));
+      line.setAttribute('x2', cx + r2 * Math.cos(rad));
+      line.setAttribute('y2', cy + r2 * Math.sin(rad));
+      line.setAttribute('class', `radial-tick ${isHour ? 'hour-mark' : ''}`);
+      ticksSvg.appendChild(line);
+    }
+
+    // 2. Clock Reveal GSAP Animation Timeline
+    const imageWrapper = document.getElementById('imageWrapper');
+    const heroImage = document.getElementById('heroImage');
+    const captionPill = document.getElementById('captionPill');
+    const replayBtn = document.getElementById('replayBtn');
+
+    let tl = null;
+
+    function runClockReveal() {
+      if (tl) tl.kill();
+
+      // Respect prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        imageWrapper.style.maskImage = 'none';
+        imageWrapper.style.webkitMaskImage = 'none';
+        imageWrapper.style.clipPath = 'none';
+        imageWrapper.style.borderRadius = '24px';
+        heroImage.style.transform = 'scale(1)';
+        captionPill.classList.add('visible');
+        return;
+      }
+
+      captionPill.classList.remove('visible');
+
+      // Initial State
+      const proxy = { angle: 0, morph: 0, ticksOpacity: 0 };
+      
+      imageWrapper.style.clipPath = 'circle(50% at 50% 50%)';
+      imageWrapper.style.borderRadius = '50%';
+      imageWrapper.style.maskImage = 'conic-gradient(from -90deg at 50% 50%, #000 0deg, #000 0deg, transparent 0deg 360deg)';
+      imageWrapper.style.webkitMaskImage = 'conic-gradient(from -90deg at 50% 50%, #000 0deg, #000 0deg, transparent 0deg 360deg)';
+      heroImage.style.transform = 'scale(1.10)';
+
+      tl = gsap.timeline();
+
+      // Stagger ticks fade-in
+      const ticks = ticksSvg.querySelectorAll('.radial-tick');
+      tl.fromTo(ticks, 
+        { opacity: 0, scale: 0.7, transformOrigin: '200px 200px' }, 
+        { opacity: 1, scale: 1, duration: 0.5, stagger: 0.01, ease: 'power2.out' },
+        0
+      );
+
+      // PHASE 1: Radial Clock Sweep (1.35s, power2.inOut)
+      tl.to(proxy, {
+        angle: 360,
+        duration: 1.35,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+          const mask = `conic-gradient(from -90deg at 50% 50%, #000 0deg, #000 ${proxy.angle}deg, transparent ${proxy.angle}deg 360deg)`;
+          imageWrapper.style.maskImage = mask;
+          imageWrapper.style.webkitMaskImage = mask;
+        }
+      }, 0.1);
+
+      // PHASE 2: Shape Morph Circle -> Rect (0.75s, power3.out)
+      tl.to(proxy, {
+        morph: 1,
+        duration: 0.75,
+        ease: 'power3.out',
+        onUpdate: () => {
+          // Remove conic mask once fully revealed
+          imageWrapper.style.maskImage = 'none';
+          imageWrapper.style.webkitMaskImage = 'none';
+
+          const radius = (1 - proxy.morph) * 50;
+          if (proxy.morph >= 0.99) {
+            imageWrapper.style.clipPath = 'none';
+            imageWrapper.style.borderRadius = '24px';
+          } else {
+            imageWrapper.style.clipPath = `inset(0% 0% 0% 0% round ${radius}% / ${radius}%)`;
+            imageWrapper.style.borderRadius = `${radius}%`;
+          }
+
+          // Settling scale: 1.10 down to 1.00
+          heroImage.style.transform = `scale(${(1.10 - proxy.morph * 0.10).toFixed(4)})`;
+
+          // Fade out ticks
+          ticksSvg.style.opacity = Math.max(0, 1 - proxy.morph * 1.5);
+        },
+        onComplete: () => {
+          captionPill.classList.add('visible');
+        }
+      }, "-=0.08");
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', runClockReveal);
+    replayBtn.addEventListener('click', runClockReveal);
+  </script>
+</body>
+</html>

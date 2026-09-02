@@ -1,0 +1,89 @@
+{
+  "webmcp_version": "1.0.0-lok-sabha-18",
+  "application": {
+    "name": "NetaWatch",
+    "description": "Civic Intelligence & Public Accountability Platform for 543 Lok Sabha Members of Parliament",
+    "jurisdiction": "India - 18th Lok Sabha",
+    "primary_sources": [
+      "Election Commission of India (Form 26 Affidavits)",
+      "Lok Sabha Secretariat Hansard Records & PRS Legislative Research",
+      "Ministry of Statistics and Programme Implementation (MPLADS Portal)",
+      "Supreme Court of India & High Court e-Courts National Judicial Data Grid (NJDG)"
+    ]
+  },
+  "tools": [
+    {
+      "name": "search_politicians",
+      "description": "Search verified database of 543 Lok Sabha MPs by name, constituency, state, party, or alliance coalition.",
+      "readOnly": true,
+      "parameters": {
+        "query": "string (optional keyword matching MP name, constituency, state, or party)",
+        "alliance": "string (optional: 'ALL' | 'NDA' | 'INDIA' | 'Others' | 'Independent')",
+        "state": "string (optional Indian State / UT name)",
+        "limit": "number (optional, default 10, max 50)"
+      }
+    },
+    {
+      "name": "get_politician_profile",
+      "description": "Retrieve verified profile dossier of a specific MP including bio, age, education, role, Form 26 affidavit verification, and core metrics.",
+      "readOnly": true,
+      "parameters": {
+        "politician_id": "string (required, e.g. 'amit-shah', 'rahul-gandhi', 'shivraj-singh-chouhan')"
+      }
+    },
+    {
+      "name": "get_parliamentary_activity",
+      "description": "Retrieve official parliamentary attendance records, debates count, questions asked, private member bills, and committee memberships for an MP.",
+      "readOnly": true,
+      "parameters": {
+        "politician_id": "string (required)"
+      }
+    },
+    {
+      "name": "get_political_statements_and_stances",
+      "description": "Retrieve verified policy stances, public positions, and recent news coverage with sentiment and source attribution for an MP.",
+      "readOnly": true,
+      "parameters": {
+        "politician_id": "string (required)",
+        "topic_keyword": "string (optional topic filter, e.g. 'Economy', 'Security', 'Welfare')"
+      }
+    },
+    {
+      "name": "get_political_activity_and_initiatives",
+      "description": "Retrieve major landmark initiatives, career timeline milestones, and MPLADS constituency development funds.",
+      "readOnly": true,
+      "parameters": {
+        "politician_id": "string (required)"
+      }
+    },
+    {
+      "name": "compare_politicians_matrix",
+      "description": "Perform computational head-to-head comparative analysis of 2 to 4 politicians across attendance, debates, declared wealth, criminal cases, and MPLADS delivery.",
+      "readOnly": true,
+      "parameters": {
+        "politician_ids": "array of 2-4 strings (required)",
+        "focus_areas": "array of strings (optional: 'parliamentary', 'financial', 'legal', 'initiatives', 'all')"
+      }
+    },
+    {
+      "name": "set_comparison_view",
+      "description": "Actuate and control the NetaWatch user interface: syncs selected politicians into comparison tray, opens side-by-side comparison modal, and sets active analytical focus dimension.",
+      "readOnly": false,
+      "parameters": {
+        "politician_ids": "array of strings (required)",
+        "open_compare_modal": "boolean (optional, default true)",
+        "focus_area": "string (optional: 'all' | 'parliamentary' | 'financial' | 'legal' | 'initiatives')",
+        "switch_view": "string (optional: 'grid' | 'table' | 'analytics' | 'map' | 'manifesto' | 'nepotism-tracker' | 'legal-registry')"
+      }
+    },
+    {
+      "name": "get_evidence_and_affidavits",
+      "description": "Retrieve verifiable legal cases, sworn ECI Form 26 disclosures, IPC criminal sections, asset declarations history, and flagged contractor tenders for an MP.",
+      "readOnly": true,
+      "parameters": {
+        "politician_id": "string (required)",
+        "evidence_type": "string (optional: 'criminal_cases' | 'asset_affidavits' | 'contracts_and_conflicts' | 'all')"
+      }
+    }
+  ]
+}
