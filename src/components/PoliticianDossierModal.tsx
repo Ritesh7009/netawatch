@@ -4,7 +4,7 @@ import {
   ExternalLink, Calendar, MapPin, Award, GraduationCap, Briefcase, 
   Heart, Users, Scale, FileText, Share2, Printer, Check, AlertCircle,
   Building, Sparkles, BookOpen, Clock, Newspaper, ArrowUpRight, Activity, User,
-  Gavel, Filter, AlertTriangle, ShieldCheck, MessageSquare, Info
+  Gavel, Filter, AlertTriangle, ShieldCheck, MessageSquare, Info, MoreVertical
 } from 'lucide-react';
 import { Politician, TabType } from '../types';
 import { PoliticianImage } from './PoliticianImage';
@@ -81,6 +81,7 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareToastMessage, setShareToastMessage] = useState<string | null>(null);
+  const [isMobileActionMenuOpen, setIsMobileActionMenuOpen] = useState(false);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
@@ -168,8 +169,79 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
           </div>
         )}
 
+        {/* Mobile Action Overflow Menu Sheet / Popover */}
+        {isMobileActionMenuOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:hidden bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+            <div className="fixed inset-0" onClick={() => setIsMobileActionMenuOpen(false)} />
+            <div className="relative w-full bg-[#f8f6f0] border-t-2 border-[#18181b] p-4 rounded-t-2xl shadow-2xl space-y-3 z-10 animate-in slide-in-from-bottom duration-200">
+              <div className="flex items-center justify-between pb-2 border-b border-[#18181b]/15">
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-xs overflow-hidden border border-[#18181b]/30">
+                    <PoliticianImage
+                      src={photo}
+                      alt={name}
+                      partyColor={partyColor}
+                      name={name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <span className="font-serif font-black text-sm text-[#18181b] truncate">{name}</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileActionMenuOpen(false)}
+                  className="p-2 text-[#71717a] hover:text-[#18181b] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                {onInvestigateWithAgent && (
+                  <button
+                    onClick={() => {
+                      setIsMobileActionMenuOpen(false);
+                      onInvestigateWithAgent([politician.id], `Full investigative accountability audit of ${politician.name}`);
+                    }}
+                    className="w-full flex items-center gap-3 bg-[#18181b] text-white p-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider min-h-[44px] cursor-pointer"
+                  >
+                    <Sparkles className="h-4 w-4 text-amber-400" />
+                    <span>Run AI Agent Audit</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setIsMobileActionMenuOpen(false);
+                    onToggleCompare(politician);
+                  }}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-xs font-bold uppercase tracking-wider border-2 min-h-[44px] cursor-pointer ${
+                    isCompared
+                      ? 'bg-[#c44d31] border-[#c44d31] text-white'
+                      : 'bg-white border-[#18181b] text-[#18181b]'
+                  }`}
+                >
+                  <Scale className="h-4 w-4" />
+                  <span>{isCompared ? 'Remove from Comparison' : 'Add to Compare Dock'}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsMobileActionMenuOpen(false);
+                    handleShare();
+                  }}
+                  className="w-full flex items-center gap-3 bg-white border-2 border-[#18181b] text-[#18181b] p-3 rounded-xl text-xs font-bold uppercase tracking-wider min-h-[44px] cursor-pointer"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span>Share Dossier Link</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Slim Sticky Top Action Bar (Mobile & Desktop) */}
-        <div className="sticky top-0 flex items-center justify-between border-b-2 border-[#18181b]/20 bg-[#e8e4da] px-3 sm:px-5 py-2.5 flex-shrink-0 z-30 min-h-[48px]">
+        <div className="sticky top-0 flex items-center justify-between border-b-2 border-[#18181b]/20 bg-[#e8e4da] px-3 sm:px-5 py-2 sm:py-2.5 flex-shrink-0 z-30 min-h-[46px] sm:min-h-[48px]">
           <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
             {isScrolled ? (
               <div className="flex items-center gap-2 min-w-0 animate-in fade-in duration-150">
@@ -214,7 +286,8 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {/* Desktop Action Buttons */}
+          <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             {/* Agent Audit Button */}
             {onInvestigateWithAgent && (
               <button
@@ -272,6 +345,27 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
             <button
               onClick={onClose}
               className="border-2 border-[#18181b] bg-[#18181b] p-2 text-white hover:bg-[#c44d31] hover:border-[#c44d31] transition touch-manipulation min-h-[36px] min-w-[36px] flex items-center justify-center rounded-xs shadow-xs cursor-pointer"
+              title="Close Dossier"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4 stroke-[2.5]" />
+            </button>
+          </div>
+
+          {/* Mobile Right Controls: Overflow Menu Button + Circular Close Button */}
+          <div className="flex sm:hidden items-center gap-1.5 flex-shrink-0">
+            <button
+              onClick={() => setIsMobileActionMenuOpen(true)}
+              className="border border-[#18181b] bg-white p-2 text-[#18181b] rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center shadow-xs active:bg-[#18181b] active:text-white transition cursor-pointer"
+              title="More Actions"
+              aria-label="More Actions"
+            >
+              <MoreVertical className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={onClose}
+              className="border-2 border-[#18181b] bg-[#18181b] p-2 text-white rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center shadow-xs active:bg-[#c44d31] active:border-[#c44d31] transition cursor-pointer"
               title="Close Dossier"
               aria-label="Close"
             >
@@ -385,7 +479,7 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as TabType)}
-                      className={`flex items-center gap-1.5 whitespace-nowrap px-3 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all touch-manipulation flex-shrink-0 rounded-xs cursor-pointer select-none ${
+                      className={`flex items-center gap-1.5 whitespace-nowrap px-3 sm:px-3.5 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all touch-manipulation flex-shrink-0 rounded-xs cursor-pointer select-none min-h-[38px] ${
                         isActive
                           ? 'bg-[#18181b] text-white shadow-xs border border-[#18181b]'
                           : 'bg-white text-[#403e39] border border-[#18181b]/20 hover:border-[#18181b] hover:text-[#18181b] hover:bg-[#faf9f6]'
@@ -398,6 +492,7 @@ export const PoliticianDossierModal: React.FC<PoliticianDossierModalProps> = ({
                 })}
               </div>
               {/* Subtle edge fade gradient to indicate horizontal scroll */}
+              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-[#f5f2ea] to-transparent sm:hidden" />
               <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#f5f2ea] to-transparent sm:hidden" />
             </div>
           </div>

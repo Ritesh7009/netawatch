@@ -9,7 +9,8 @@ import { Landmark } from 'lucide-react';
 
 interface PoliticianImageProps {
   src?: string | null;
-  alt: string;
+  photoUrl?: string | null;
+  alt?: string;
   className?: string;
   partyColor?: string;
   name?: string;
@@ -22,6 +23,7 @@ const globalClientPhotoCache = new Map<string, string>();
 
 export const PoliticianImage: React.FC<PoliticianImageProps> = ({
   src,
+  photoUrl,
   alt,
   className = 'h-full w-full object-cover',
   partyColor = '#1a1a1a',
@@ -41,9 +43,10 @@ export const PoliticianImage: React.FC<PoliticianImageProps> = ({
       list.push(globalClientPhotoCache.get(cacheKey)!);
     }
 
-    // 1. Explicitly passed source if valid
-    if (src && typeof src === 'string' && src.startsWith('http') && !src.includes('photo-1544005313-94ddf0286df2')) {
-      if (!list.includes(src)) list.push(src);
+    // 1. Explicitly passed source (photoUrl or src) if valid
+    const initialUrl = photoUrl || src;
+    if (initialUrl && typeof initialUrl === 'string' && initialUrl.startsWith('http') && !initialUrl.includes('photo-1544005313-94ddf0286df2')) {
+      if (!list.includes(initialUrl)) list.push(initialUrl);
     }
 
     // 2. Direct verified lookup
@@ -76,7 +79,7 @@ export const PoliticianImage: React.FC<PoliticianImageProps> = ({
     setHasAttemptedApi(false);
     setHasError(nextList.length === 0);
     setIsLoading(nextList.length > 0);
-  }, [src, name, alt, constituency]);
+  }, [src, photoUrl, name, alt, constituency, state]);
 
   // If all static candidate URLs fail, query the live online resolver (/api/politician-photo)
   const fetchLivePhoto = async () => {

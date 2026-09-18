@@ -48,6 +48,57 @@ async function startServer() {
     res.json({ status: 'ok', time: new Date().toISOString() });
   });
 
+  // API: GET /api/v1/representatives/location - Multi-tier location resolution endpoint
+  app.get('/api/v1/representatives/location', async (req, res) => {
+    try {
+      const pinCode = req.query.pinCode as string;
+      const query = req.query.query as string;
+      const latStr = req.query.lat as string;
+      const lngStr = req.query.lng as string;
+      const state = req.query.state as string;
+      const district = req.query.district as string;
+      const constituency = req.query.constituency as string;
+
+      const latitude = latStr ? parseFloat(latStr) : undefined;
+      const longitude = lngStr ? parseFloat(lngStr) : undefined;
+
+      const { LocationResolutionService } = await import('./src/services/LocationResolutionService.js').catch(async () => {
+        return await import('./src/services/LocationResolutionService.ts');
+      });
+
+      const resolved = await LocationResolutionService.resolveLocation({
+        pinCode,
+        query,
+        latitude,
+        longitude,
+        state,
+        district,
+        constituency,
+      });
+
+      res.json({
+        success: true,
+        data: resolved,
+      });
+    } catch (err: any) {
+      console.error('Error in /api/v1/representatives/location:', err);
+      res.status(500).json({ error: err.message || 'Failed to resolve location hierarchy' });
+    }
+  });
+
+  // API: GET /api/v1/representatives/states - Return India state governance profiles
+  app.get('/api/v1/representatives/states', async (req, res) => {
+    try {
+      const { STATE_GOVERNANCE_PROFILES } = await import('./src/data/representation/statesAndOffices.js').catch(async () => {
+        return await import('./src/data/representation/statesAndOffices.ts');
+      });
+      res.json({ success: true, states: STATE_GOVERNANCE_PROFILES });
+    } catch (err: any) {
+      console.error('Error fetching state governance profiles:', err);
+      res.status(500).json({ error: err.message || 'Failed to fetch states' });
+    }
+  });
+
   // API: GET /api/states - Returns all states with seat counts and macro metrics
   app.get('/api/states', async (req, res) => {
     try {

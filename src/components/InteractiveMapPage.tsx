@@ -69,6 +69,14 @@ export const InteractiveMapPage: React.FC<InteractiveMapPageProps> = ({
   // Search across all 543 constituencies or states
   const [globalSearch, setGlobalSearch] = useState('');
 
+  // Zoom scale for SVG map
+  const [mapZoom, setMapZoom] = useState<number>(1);
+
+  // Sorted list of all 36 States & UTs
+  const allStateNames = useMemo(() => {
+    return Object.keys(STATE_PARLIAMENTARY_STATS).sort((a, b) => a.localeCompare(b));
+  }, []);
+
   // The state currently in preview (either hovered state or selected state)
   const activePreviewStateName = hoveredStateName || selectedStateName;
 
@@ -284,6 +292,29 @@ export const InteractiveMapPage: React.FC<InteractiveMapPageProps> = ({
                 
                 {/* Left 7 Cols: The India SVG Map */}
                 <div className="lg:col-span-7 bg-[#fbf9f5] border-2 border-[#1a1a1a] p-2 sm:p-4 relative">
+                  
+                  {/* Quick Jump to State Dropdown (especially helpful on mobile touchscreens) */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 bg-[#f0ede6] border-2 border-[#1a1a1a] mb-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#1a1a1a]">
+                      <MapPin className="h-4 w-4 text-[#c44d31] shrink-0" />
+                      <span className="font-mono text-[11px] uppercase tracking-wider">Jump to State / UT (36):</span>
+                    </div>
+                    <select
+                      value={selectedStateName}
+                      onChange={(e) => {
+                        handleStateClick(e.target.value);
+                      }}
+                      className="bg-white border-2 border-[#1a1a1a] px-2.5 py-1.5 text-xs font-bold text-[#18181b] rounded-none focus:outline-hidden focus:ring-2 focus:ring-[#c44d31] min-h-[38px] cursor-pointer"
+                    >
+                      <option value="" disabled>Select from 36 States & UTs...</option>
+                      {allStateNames.map((st) => (
+                        <option key={st} value={st}>
+                          {st} ({getParliamentaryMacroStats(st)?.totalSeats || 0} Seats)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Live State Hover Summary Bar */}
                   <div className="mb-2 px-3 py-1.5 bg-[#1a1a1a] text-white flex flex-wrap items-center justify-between text-xs font-mono">
                     <div className="flex items-center gap-2">
@@ -299,18 +330,59 @@ export const InteractiveMapPage: React.FC<InteractiveMapPageProps> = ({
                       <span className="bg-[#c44d31] text-white px-2 py-0.5 text-[10px] font-black uppercase tracking-wider">
                         {activePreviewConstituencies.length || activePreviewStats?.totalSeats || 0} Constituencies Available
                       </span>
+                      <span className="sm:hidden text-[10px] text-[#fbbf24]">
+                        Tap state to view →
+                      </span>
                       <span className="hidden sm:inline text-[10px] text-[#fbbf24]">
                         Click state to drill down →
                       </span>
                     </div>
                   </div>
 
-                  <IndiaMap
-                    onSelectState={handleStateClick}
-                    overlayMode={overlayMode}
-                    selectedStateName={selectedStateName}
-                    onHoverState={(st) => setHoveredStateName(st)}
-                  />
+                  {/* Zoom Controls */}
+                  <div className="absolute top-16 right-3 sm:right-6 z-20 flex flex-col gap-1 bg-white/95 border-2 border-[#1a1a1a] p-1 shadow-md">
+                    <button
+                      type="button"
+                      onClick={() => setMapZoom((prev) => Math.min(2.2, +(prev + 0.25).toFixed(2)))}
+                      className="h-6 w-6 sm:h-7 sm:w-7 flex items-center justify-center font-bold text-sm hover:bg-[#1a1a1a] hover:text-white transition cursor-pointer"
+                      title="Zoom In"
+                      aria-label="Zoom In"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMapZoom((prev) => Math.max(0.75, +(prev - 0.25).toFixed(2)))}
+                      className="h-6 w-6 sm:h-7 sm:w-7 flex items-center justify-center font-bold text-sm hover:bg-[#1a1a1a] hover:text-white transition cursor-pointer"
+                      title="Zoom Out"
+                      aria-label="Zoom Out"
+                    >
+                      -
+                    </button>
+                    {mapZoom !== 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setMapZoom(1)}
+                        className="text-[9px] font-mono font-bold px-1 py-0.5 hover:bg-[#c44d31] hover:text-white transition cursor-pointer"
+                        title="Reset Zoom"
+                        aria-label="Reset Zoom"
+                      >
+                        1x
+                      </button>
+                    )}
+                  </div>
+
+                  <div 
+                    className="overflow-hidden transition-transform duration-200 origin-center"
+                    style={{ transform: `scale(${mapZoom})` }}
+                  >
+                    <IndiaMap
+                      onSelectState={handleStateClick}
+                      overlayMode={overlayMode}
+                      selectedStateName={selectedStateName}
+                      onHoverState={(st) => setHoveredStateName(st)}
+                    />
+                  </div>
 
                   {/* Map Legend */}
                   <div className="mt-3 pt-2 border-t border-[#1a1a1a]/10 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">

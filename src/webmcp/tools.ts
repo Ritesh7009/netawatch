@@ -7,6 +7,9 @@ import { WebMCPToolDefinition, WebMCPStateControllers } from './types';
 import { ALL_543_POLITICIANS, POLITICIANS_DATA } from '../data/politicians';
 import { findFlaggedContracts } from '../utils/nepotismTrackerLogic';
 import { Politician } from '../types';
+import { LocationResolutionService } from '../services/LocationResolutionService';
+import { STATE_GOVERNANCE_PROFILES } from '../data/representation/statesAndOffices';
+import { ALL_CONSTITUENCIES_DIRECTORY } from '../data/allConstituencies';
 
 /**
  * Helper to retrieve full politician record from cache or synthesis
@@ -617,6 +620,172 @@ export function createWebMCPTools(controllers: WebMCPStateControllers): WebMCPTo
         ];
 
         return result;
+      }
+    },
+
+    // -------------------------------------------------------------
+    // TOOL 9: resolve_user_location
+    // -------------------------------------------------------------
+    {
+      name: 'resolve_user_location',
+      description: 'Resolve GPS coordinates (latitude/longitude), a 6-digit Indian PIN code, or an address query into the verified National, State, District, and Local Government jurisdictional boundaries.',
+      readOnlyHint: true,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          pin_code: {
+            type: 'string',
+            description: '6-digit Indian postal PIN code (e.g. "462001", "110001", "221001").'
+          },
+          latitude: {
+            type: 'number',
+            description: 'GPS Latitude coordinate in decimal degrees.'
+          },
+          longitude: {
+            type: 'number',
+            description: 'GPS Longitude coordinate in decimal degrees.'
+          },
+          address_query: {
+            type: 'string',
+            description: 'Text query for city, neighborhood, or constituency (e.g. "Indiranagar Bangalore", "Bhopal North").'
+          }
+        }
+      },
+      execute: async (input: { pin_code?: string; latitude?: number; longitude?: number; address_query?: string }) => {
+        const resolved = await LocationResolutionService.resolveLocation({
+          pinCode: input.pin_code,
+          latitude: input.latitude,
+          longitude: input.longitude,
+          query: input.address_query
+        });
+
+        return {
+          data_available: true,
+          resolvedLocation: resolved.resolvedLocation,
+          administrativeHierarchy: resolved.administrativeHierarchy,
+          metadata: resolved.metadata
+        };
+      }
+    },
+
+    // -------------------------------------------------------------
+    // TOOL 10: get_my_representatives
+    // -------------------------------------------------------------
+    {
+      name: 'get_my_representatives',
+      description: 'Discover all current and historical elected representatives (Lok Sabha MP, Vidhan Sabha MLA, Mayor, Ward Councillor) for a given location, PIN code, or address in India. Returns structured terms, party affiliations, declared assets, criminal cases, and statutory ECI evidence links.',
+      readOnlyHint: true,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          pin_code: {
+            type: 'string',
+            description: '6-digit Indian PIN code.'
+          },
+          address_query: {
+            type: 'string',
+            description: 'Address or constituency name.'
+          },
+          switch_ui_view: {
+            type: 'boolean',
+            default: false,
+            description: 'Whether to actuate the frontend view to the "My Representatives" hub.'
+          }
+        }
+      },
+      execute: async (input: { pin_code?: string; address_query?: string; switch_ui_view?: boolean }) => {
+        const resolved = await LocationResolutionService.resolveLocation({
+          pinCode: input.pin_code,
+          query: input.address_query
+        });
+
+        if (input.switch_ui_view) {
+          controllers.setViewMode('representatives');
+        }
+
+        return {
+          data_available: true,
+          resolvedLocation: resolved.resolvedLocation,
+          representatives: resolved.electoralHierarchy.map(h => ({
+            level: h.level,
+            office: h.office,
+            constituency: h.constituency.officialName,
+            isDataAvailable: h.isDataAvailable,
+            currentRepresentative: h.currentRepresentative ? {
+              name: h.currentRepresentative.person.fullName,
+              party: h.currentRepresentative.term.partyAbbr,
+              partyName: h.currentRepresentative.term.partyName,
+              alliance: h.currentRepresentative.term.alliance,
+              electionYear: h.currentRepresentative.term.electionYear,
+              attendancePercent: h.currentRepresentative.term.legislativeStats?.attendancePercent,
+              declaredAssetsCr: h.currentRepresentative.term.declaredAssetsCr,
+              criminalCasesCount: h.currentRepresentative.term.criminalCasesCount,
+              evidenceCount: h.currentRepresentative.evidence.length
+            } : null,
+            historicalRepresentativesCount: h.historicalRepresentatives.length,
+            unavailabilityReason: h.unavailabilityReason
+          })),
+          allEvidence: resolved.allEvidence.map(e => ({
+            title: e.title,
+            source: e.sourceName,
+            documentType: e.documentType,
+            verificationStatus: e.verificationStatus,
+            url: e.sourceUrl
+          }))
+        };
+      }
+    },
+
+    // -------------------------------------------------------------
+    // TOOL 11: get_representative_hierarchy
+    // -------------------------------------------------------------
+    {
+      name: 'get_representative_hierarchy',
+      description: 'Explore the full constitutional and administrative hierarchy (National Parliament -> State Legislature & Council -> District -> Subdistrict/Tehsil -> Local Body -> Ward) for any Indian State or Region.',
+      readOnlyHint: true,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          state_name: {
+            type: 'string',
+            description: 'State or UT name (e.g. "Madhya Pradesh", "Uttar Pradesh", "Maharashtra", "Karnataka").'
+          }
+        },
+        required: ['state_name']
+      },
+      execute: async (input: { state_name: string }) => {
+        const stateKey = Object.keys(STATE_GOVERNANCE_PROFILES).find(
+          s => s.toLowerCase() === input.state_name.toLowerCase() || s.toLowerCase().includes(input.state_name.toLowerCase())
+        );
+
+        const profile = stateKey ? STATE_GOVERNANCE_PROFILES[stateKey] : null;
+
+        if (!profile) {
+          return {
+            data_available: false,
+            error: `State profile for '${input.state_name}' not found. Available states: ${Object.keys(STATE_GOVERNANCE_PROFILES).join(', ')}`
+          };
+        }
+
+        const constituenciesInState = ALL_CONSTITUENCIES_DIRECTORY.filter(
+          c => c.state.toLowerCase() === profile.name.toLowerCase()
+        );
+
+        return {
+          data_available: true,
+          stateProfile: profile,
+          lokSabhaConstituenciesCount: profile.lokSabhaSeats,
+          assemblySeatsCount: profile.assemblySeats,
+          isBicameral: profile.isBicameral,
+          councilSeatsCount: profile.councilSeats || 0,
+          sampleConstituencies: constituenciesInState.slice(0, 10).map(c => ({
+            name: c.constituency,
+            mpName: c.mpName,
+            party: c.partyAbbr || c.party,
+            alliance: c.alliance,
+            house: c.house
+          }))
+        };
       }
     }
   ];

@@ -14,7 +14,8 @@ import {
   Clock, 
   FileCheck,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Compass
 } from 'lucide-react';
 import { Politician, ViewMode, StatementTopic } from '../types';
 import { PoliticianImage } from './PoliticianImage';
@@ -114,6 +115,10 @@ export const HeroOverview: React.FC<HeroOverviewProps> = ({
 
   // Sample Research Queries
   const researchQueries = [
+    {
+      label: '📍 Find My Representatives (MP, MLA, Mayor, Ward)',
+      action: () => onNavigateToView && onNavigateToView('representatives')
+    },
     {
       label: 'Compare Amit Shah, Rahul Gandhi and Shivraj Singh Chouhan',
       action: () => handleExecuteSearch('Compare Amit Shah, Rahul Gandhi and Shivraj Singh Chouhan')

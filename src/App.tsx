@@ -21,6 +21,7 @@ import { InteractiveMapPage } from './components/InteractiveMapPage';
 import { ManifestoTracker } from './components/ManifestoTracker';
 import { NepotismAssetTrackerView } from './components/NepotismAssetTrackerView';
 import { LegalRegistryView } from './components/LegalRegistryView';
+import { MyRepresentativesView } from './components/MyRepresentatives/MyRepresentativesView';
 import { TransparencyGuideModal } from './components/TransparencyGuideModal';
 import { AllIndiaMPRegistryModal } from './components/AllIndiaMPRegistryModal';
 import { AgentNotificationToast } from './components/AgentNotificationToast';
@@ -170,6 +171,7 @@ export default function App() {
       // Dynamic view-based SEO titles
       const viewTitles: Record<ViewMode, string> = {
         grid: 'NetaWatch - Indian Political Intelligence & Leader Dossiers | 18th Lok Sabha',
+        representatives: 'My Representatives - Discover National, State & Local Leaders | NetaWatch',
         compare: 'Compare Leaders - 18th Lok Sabha Side-by-Side Matrix | NetaWatch',
         statements: 'Verified Public & Parliamentary Statements Explorer | NetaWatch',
         methodology: 'Civic Research Methodology & Source Standards | NetaWatch',
@@ -379,6 +381,28 @@ export default function App() {
             {/* 9. NEWSLETTER / UPDATES STRIP */}
             <AuditUpdatesStrip />
 
+          </div>
+        )}
+
+        {/* VIEW 1: MY REPRESENTATIVES (India-wide multi-tier resolution) */}
+        {viewMode === 'representatives' && (
+          <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6">
+            <MyRepresentativesView
+              onSelectPoliticianId={(id) => {
+                const found = politicians.find(p => p.id === id);
+                if (found) {
+                  analytics.viewPolitician(found.name, found.partyAbbr, found.constituency, found.state);
+                  setSelectedPolitician(found);
+                } else {
+                  // If not in preloaded top 25, find in full registry
+                  const allMatch = ALL_543_POLITICIANS.find(p => p.id === id);
+                  if (allMatch) {
+                    setSelectedPolitician(allMatch);
+                  }
+                }
+              }}
+              onBackToOverview={() => setViewMode('grid')}
+            />
           </div>
         )}
 

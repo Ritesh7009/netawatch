@@ -143,6 +143,7 @@ export type TabType = 'overview' | 'financials' | 'parliament' | 'mplads' | 'leg
 
 export type ViewMode = 
   | 'grid' 
+  | 'representatives'
   | 'compare' 
   | 'statements' 
   | 'methodology' 
